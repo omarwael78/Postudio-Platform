@@ -37,7 +37,7 @@
                     </div>
                     {% endfor %}
 
-                    <form action="/signin" method="POST">
+                    <form action="/signin/" method="POST">
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Username" class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm bg-gray-50 focus:bg-white transition mb-3" required>
                         <input type="password" name="password" placeholder="Password" class="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm bg-gray-50 focus:bg-white transition mb-4" required>

@@ -42,6 +42,7 @@
                     </button>
 
             </div>
+            </div>
             <div class="post-creator-footer">
                 <button id="postCreatorSubmit" class="post-creator-submit brand-btn" disabled onclick="submitPost()">Post</button>
             </div>
@@ -56,7 +57,7 @@
                         <span class="brand-logo">postudio</span>
                     </a>
                 </div>
-                <form action="search" method="POST" class="header_search">
+                <form action="/search/" method="POST" class="header_search">
                 {% csrf_token %}
                     <input type="text" name="username" placeholder="Search postudio...">
                     <button type="submit" class="icon-search" style="background:none; border:none; cursor:pointer;">
@@ -80,7 +81,7 @@
                     <ul>
                         <li><a href="/profile/{{request.user.username}}"> My Profile </a></li>
                         <li><a href="/settings"> Account Settings </a></li>
-                        <li><a href="logout"> Log Out</a></li>
+                        <li><a href="/logout/"> Log Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -340,16 +341,9 @@
         postMediaFile = file;
         const preview = document.getElementById('postCreatorPreview');
         const img = document.getElementById('postCreatorPreviewImg');
-        img.style.display = 'none';
-        img.style.display = 'none';
         const url = URL.createObjectURL(file);
-        if (type === 'image') {
-            img.src = url;
-            img.style.display = 'block';
-        } else {
-            img.src = url;
-            img.style.display = 'block';
-        }
+        img.src = url;
+        img.style.display = 'block';
         preview.classList.add('show');
         document.getElementById('postCreatorSubmit').disabled = false;
         input.value = '';
@@ -374,9 +368,9 @@
         const formData = new FormData();
         formData.append('caption', text);
 
+        if (postMediaFile) {
             formData.append('image_upload', postMediaFile);
             formData.append('post_type', 'image');
-            formData.append('image_upload', postMediaFile);
         } else {
             formData.append('post_type', 'text');
         }
@@ -647,6 +641,7 @@
     });
     </script>
 
-    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

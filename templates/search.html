@@ -21,7 +21,7 @@
                         <span class="brand-logo">postudio</span>
                     </a>
                 </div>
-                <form action="/search" method="POST" class="header_search">
+                <form action="/search/" method="POST" class="header_search">
                 {% csrf_token %}
                     <input type="text" name="username" placeholder="Search postudio...">
                     <button type="submit" class="icon-search" style="background:none; border:none; cursor:pointer;">
@@ -42,8 +42,8 @@
                 <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                     <ul>
                         <li><a href="/profile/{{request.user.username}}">My Profile</a></li>
-                        <li><a href="/settings">Account Settings</a></li>
-                        <li><a href="/logout">Log Out</a></li>
+                        <li><a href="/settings/">Account Settings</a></li>
+                        <li><a href="/logout/">Log Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -103,6 +103,7 @@
     <script src="{% static 'assets/js/uikit.js' %}"></script>
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
-    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

@@ -54,8 +54,9 @@ def compute_post_streaks(posts):
 
 @login_required(login_url='signin')
 def index(request):
+    from django.shortcuts import get_object_or_404
     user_object = User.objects.get(username=request.user.username)
-    user_profile = Profile.objects.get(user=user_object)
+    user_profile, created = Profile.objects.get_or_create(user=user_object, defaults={'id_user': user_object.id})
 
     user_following_list = []
     feed = []
@@ -170,24 +171,26 @@ def upload(request):
 
 @login_required(login_url='signin')
 def search(request):
+    from django.shortcuts import get_object_or_404
     user_object = User.objects.get(username=request.user.username)
-    user_profile = Profile.objects.get(user=user_object)
+    user_profile, created = Profile.objects.get_or_create(user=user_object, defaults={'id_user': user_object.id})
+
+    username_profile_list = []
 
     if request.method == 'POST':
         username = request.POST['username']
         username_object = User.objects.filter(username__icontains=username)
 
         username_profile = []
-        username_profile_list = []
 
         for users in username_object:
             username_profile.append(users.id)
 
+        profile_lists = []
         for ids in username_profile:
-            profile_lists = Profile.objects.filter(id_user=ids)
-            username_profile_list.append(profile_lists)
+            profile_lists.append(Profile.objects.filter(id_user=ids))
         
-        username_profile_list = list(chain(*username_profile_list))
+        username_profile_list = list(chain(*profile_lists))
     return render(request, 'search.html', {'user_profile': user_profile, 'username_profile_list': username_profile_list})
 
 @login_required(login_url='signin')
@@ -307,28 +310,29 @@ def post_detail(request, post_id):
     })
 
 @login_required(login_url='signin')
-def profile(request, pk):
-    user_object = User.objects.get(username=pk)
-    user_profile = Profile.objects.get(user=user_object)
-    user_posts = Post.objects.filter(user=pk)
+def profile(request, username):
+    from django.shortcuts import get_object_or_404
+    user_object = User.objects.get(username=username)
+    user_profile, created = Profile.objects.get_or_create(user=user_object, defaults={'id_user': user_object.id})
+    user_posts = Post.objects.filter(user=username)
     # exclude posts hidden by the current viewer (only when viewing someone else's profile)
-    if pk != request.user.username:
+    if username != request.user.username:
         hidden_ids = PostHide.objects.filter(user=request.user.username).values_list('post_id', flat=True)
         user_posts = [p for p in user_posts if str(p.id) not in hidden_ids]
     user_post_length = len(user_posts)
 
     follower = request.user.username
-    user = pk
+    user = username
 
     if FollowersCount.objects.filter(follower=follower, user=user).first():
         button_text = 'Unfollow'
     else:
         button_text = 'Follow'
 
-    user_followers = len(FollowersCount.objects.filter(user=pk))
-    user_following = len(FollowersCount.objects.filter(follower=pk))
+    user_followers = len(FollowersCount.objects.filter(user=username))
+    user_following = len(FollowersCount.objects.filter(follower=username))
 
-    current_user_profile = Profile.objects.get(user=request.user)
+    current_user_profile, created = Profile.objects.get_or_create(user=request.user, defaults={'id_user': request.user.id})
 
     context = {
         'user_object': user_object,
@@ -361,7 +365,7 @@ def follow(request):
 
 @login_required(login_url='signin')
 def settings(request):
-    user_profile = Profile.objects.get(user=request.user)
+    user_profile, _ = Profile.objects.get_or_create(user=request.user, defaults={'id_user': request.user.id})
     password_changed = False
 
     if request.method == 'POST':
