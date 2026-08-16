@@ -265,7 +265,7 @@ def repost(request, post_id):
         existing.delete()
         return JsonResponse({'success': True, 'action': 'unreposted'})
 
-    from django.postudio.files.base import ContentFile
+    from django.core.files.base import ContentFile
     import urllib.request
 
     try:

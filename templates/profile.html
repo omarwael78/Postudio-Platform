@@ -59,7 +59,7 @@
             background: #fafafa;
             aspect-ratio: 1 / 1;
         }
-        .post-grid-item img, .post-grid-item video {
+        .post-grid-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -311,7 +311,7 @@
                 <button onclick="closePostModal()" style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer; z-index:10; line-height:32px; text-align:center;">&times;</button>
                 <div id="modal-media-container" style="flex:1 1 50%; min-width:300px; background:#000; display:flex; align-items:center; justify-content:center;">
                     <img id="modal-image" src="" style="width:100%; display:block;" alt="">
-                    <video id="modal-video" src="" style="width:100%; display:none;" controls></video>
+                    <img id="modal-image" src="" style="width:100%; display:block;" alt="">
                     <div id="modal-text-only" style="display:none; width:100%; padding:40px; background:linear-gradient(135deg, #F5F3FF, #FDF2F8);">
                         <p id="modal-text-content" style="font-size:1.1rem; line-height:1.7; color:#1F2937; white-space:pre-wrap; word-wrap:break-word;"></p>
                     </div>
@@ -392,10 +392,9 @@
             if (data.post_type === 'image') {
                 img.src = data.image;
                 img.style.display = 'block';
-            } else if (data.post_type === 'video') {
-                video.src = data.image;
-                video.style.display = 'block';
             } else {
+                // Handle as text post
+            }
                 document.getElementById('modal-text-content').textContent = data.caption;
                 textOnly.style.display = 'block';
             }
