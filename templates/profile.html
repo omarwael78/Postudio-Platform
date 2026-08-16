@@ -11,8 +11,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     <style>
+        body { background: #f0f2f5 !important; }
         .profile-cover {
-            background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            background: linear-gradient(135deg, #7C3AED 0%, #A855F7 40%, #EC4899 100%);
             height: 280px;
             border-radius: 0 0 20px 20px;
             position: relative;
@@ -42,15 +43,24 @@
             background: linear-gradient(45deg, #7C3AED, #EC4899);
             display: inline-block;
         }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
         .stat-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #262626;
+            color: #1a1a2e;
         }
         .stat-label {
-            font-size: 0.85rem;
-            color: #8e8e8e;
-            font-weight: 400;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .post-grid-item {
             position: relative;
@@ -58,6 +68,11 @@
             border-radius: 8px;
             background: #fafafa;
             aspect-ratio: 1 / 1;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .post-grid-item:hover {
+            transform: scale(1.02);
         }
         .post-grid-item img {
             width: 100%;
@@ -67,19 +82,19 @@
         }
         .post-grid-item.text-post-grid {
             aspect-ratio: auto;
-            min-height: 120px;
-            padding: 16px;
+            min-height: 200px;
+            padding: 24px;
             background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .post-grid-item.text-post-grid p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #4B5563;
             text-align: center;
             word-wrap: break-word;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         .post-grid-overlay {
             position: absolute;
@@ -105,61 +120,63 @@
             gap: 4px;
         }
         .follow-btn {
-            padding: 6px 24px;
-            border-radius: 8px;
+            padding: 8px 28px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             border: none;
         }
         .follow-btn.follow {
-            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
             color: white;
+            box-shadow: 0 2px 8px rgba(124,58,237,0.3);
         }
         .follow-btn.follow:hover {
-            opacity: 0.9;
+            box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+            transform: translateY(-1px);
         }
         .follow-btn.unfollow {
-            background: #efefef;
-            color: #262626;
+            background: #f3f4f6;
+            color: #374151;
         }
         .follow-btn.unfollow:hover {
-            background: #dbdbdb;
+            background: #e5e7eb;
         }
         .edit-profile-btn {
-            padding: 6px 24px;
-            border-radius: 8px;
+            padding: 8px 28px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.9rem;
-            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
             color: white;
             border: none;
             cursor: pointer;
-            transition: opacity 0.15s ease;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 2px 8px rgba(124,58,237,0.3);
         }
         .edit-profile-btn:hover {
-            opacity: 0.9;
+            box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+            transform: translateY(-1px);
             color: white;
         }
-        .sidebar-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            border: 1px solid #efefef;
-        }
         .bio-text {
-            color: #262626;
+            color: #374151;
             font-size: 0.95rem;
-            line-height: 1.5;
+            line-height: 1.6;
             white-space: pre-wrap;
         }
-        .location-icon {
-            color: #8e8e8e;
-            vertical-align: middle;
+        .empty-profile-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: #9ca3af;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed #e5e7eb;
         }
     </style>
 </head>
@@ -268,13 +285,14 @@
         {% endif %}
 
         <!-- Posts Grid -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px;">
             {% for post in user_posts %}
             {% if post.post_type == 'text' %}
-            <div class="post-grid-item text-post-grid cursor-pointer" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
-                <p>{{post.caption|truncatechars:80}}</p>
+            <div class="post-grid-item text-post-grid" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
+                <p>{{post.caption|truncatechars:120}}</p>
             </div>
-            <div class="post-grid-item cursor-pointer" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
+            {% else %}
+            <div class="post-grid-item" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
                 <img src="{{post.image.url}}" alt="Post by {{post.user}}" loading="lazy"
                      onerror="this.parentElement.style.background='#efefef'; this.style.display='none';">
                 <div class="post-grid-overlay">
@@ -294,11 +312,14 @@
             </div>
             {% endif %}
             {% empty %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #8e8e8e;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 48px; height: 48px; margin: 0 auto 16px;">
-                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+            <div class="empty-profile-state">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="56" height="56" style="margin: 0 auto 20px;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <p style="font-size: 1.1rem;">No posts yet</p>
+                <p style="font-size: 1.1rem; font-weight: 600; color: #6b7280; margin-bottom: 4px;">No posts yet</p>
+                <p style="font-size: 0.9rem; color: #9ca3af;">When posts are shared, they'll appear here.</p>
             </div>
             {% endfor %}
         </div>
@@ -310,7 +331,6 @@
             <div style="background:white; border-radius:16px; max-width:900px; width:100%; display:flex; flex-wrap:wrap; overflow:hidden; position:relative;">
                 <button onclick="closePostModal()" style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer; z-index:10; line-height:32px; text-align:center;">&times;</button>
                 <div id="modal-media-container" style="flex:1 1 50%; min-width:300px; background:#000; display:flex; align-items:center; justify-content:center;">
-                    <img id="modal-image" src="" style="width:100%; display:block;" alt="">
                     <img id="modal-image" src="" style="width:100%; display:block;" alt="">
                     <div id="modal-text-only" style="display:none; width:100%; padding:40px; background:linear-gradient(135deg, #F5F3FF, #FDF2F8);">
                         <p id="modal-text-content" style="font-size:1.1rem; line-height:1.7; color:#1F2937; white-space:pre-wrap; word-wrap:break-word;"></p>
@@ -345,16 +365,20 @@
     </div>
 
     <!-- Brand Footer -->
-    <footer class="brand-footer">
-        <div class="brand-footer-inner">
-            <div class="brand-footer-links">
-                <span class="brand-logo-sm" style="font-size:1rem;">postudio</span>
-                <a href="/">Feed</a>
-                <a href="#">About</a>
-                <a href="#">Help</a>
-                <a href="#">Privacy</a>
+    <footer style="background: white; border-top: 1px solid #e5e7eb; margin-top: 40px;">
+        <div style="max-width: 935px; margin: 0 auto; padding: 24px 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #7C3AED, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">postudio</span>
+                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: #9ca3af;">
+                        <a href="/" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Feed</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">About</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Help</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Privacy</a>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #d1d5db;">All rights reserved to Eng.Omar Wael</p>
             </div>
-            <div class="brand-footer-copy">All rights reserved to Eng.Omar Wael</div>
         </div>
     </footer>
 
