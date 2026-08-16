@@ -10,7 +10,56 @@
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body { background: #f0f2f5 !important; }
+        .search-result-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .search-result-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+        .search-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f3f4f6;
+            ring: 2px solid white;
+        }
+        .search-view-btn {
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+        }
+        .search-view-btn:hover {
+            box-shadow: 0 4px 12px rgba(124,58,237,0.35);
+            transform: translateY(-1px);
+            color: white;
+        }
+        .empty-search {
+            text-align: center;
+            padding: 80px 30px;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed #e5e7eb;
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen">
     <header>
@@ -37,7 +86,7 @@
                     Feed
                 </a>
                 <a href="/profile/{{request.user.username}}">
-                    <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
+                    <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="" onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
                 </a>
                 <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                     <ul>
@@ -51,50 +100,55 @@
     </header>
 
     <div class="flex-1">
-    <div class="container m-auto" style="max-width: 800px; padding-top: 80px;">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Search Results</h2>
+    <div class="container m-auto" style="max-width: 700px; padding-top: 80px;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #1a1a2e; margin-bottom: 24px;">Search Results</h2>
 
         {% if username_profile_list %}
-        <div class="space-y-4">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
             {% for users in username_profile_list %}
-            <div class="brand-card overflow-hidden flex items-center p-4 gap-4">
-                <a href="/profile/{{users.user}}">
-                    <img src="{{users.profileimg.url}}" class="w-16 h-16 rounded-full object-cover" alt="">
-                </a>
-                <div class="flex-1">
-                    <h4 class="font-semibold"><a href="/profile/{{users.user}}">@{{users.user}}</a></h4>
-                    {% if users.location %}
-                    <p class="text-xs text-gray-500 mt-0.5">{{users.location}}</p>
-                    {% endif %}
-                    {% if users.bio %}
-                    <p class="text-sm text-gray-600 mt-1">{{users.bio|truncatechars:100}}</p>
-                    {% endif %}
+            <a href="/profile/{{users.user}}" style="text-decoration: none; color: inherit;">
+                <div class="search-result-card">
+                    <img src="{{users.profileimg.url}}" class="search-avatar" alt="" onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
+                    <div style="flex: 1; min-width: 0;">
+                        <h4 style="font-weight: 600; font-size: 1rem; color: #1a1a2e; margin: 0 0 2px;">@{{users.user}}</h4>
+                        {% if users.location %}
+                        <p style="font-size: 0.8rem; color: #9ca3af; margin: 0;">{{users.location}}</p>
+                        {% endif %}
+                        {% if users.bio %}
+                        <p style="font-size: 0.85rem; color: #6b7280; margin: 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{users.bio|truncatechars:80}}</p>
+                        {% endif %}
+                    </div>
+                    <span class="search-view-btn">View Profile</span>
                 </div>
-                <a href="/profile/{{users.user}}" class="brand-btn px-5 py-2 rounded-full text-sm whitespace-nowrap">View Profile</a>
-            </div>
+            </a>
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center py-20 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-16 h-16 mx-auto mb-4 opacity-50">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        <div class="empty-search">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="56" height="56" style="margin: 0 auto 20px;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <p class="text-lg">No users found</p>
-            <p class="text-sm mt-1">Try searching for a different username</p>
+            <p style="font-size: 1.1rem; font-weight: 600; color: #6b7280; margin-bottom: 4px;">No users found</p>
+            <p style="font-size: 0.9rem; color: #9ca3af;">Try searching for a different username</p>
         </div>
         {% endif %}
     </div>
 </div>
 
-    <footer class="brand-footer" style="margin-top: 60px;">
-        <div class="brand-footer-inner">
-            <div class="brand-footer-links">
-                <span class="brand-logo-sm" style="font-size:1rem;">postudio</span>
-                <a href="/">Feed</a>
-                <a href="#">About</a>
-                <a href="#">Privacy</a>
+    <footer style="background: white; border-top: 1px solid #e5e7eb; margin-top: 60px;">
+        <div style="max-width: 700px; margin: 0 auto; padding: 24px 16px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #7C3AED, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">postudio</span>
+                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: #9ca3af;">
+                        <a href="/" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Feed</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">About</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Privacy</a>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #d1d5db;">All rights reserved to Eng.Omar Wael</p>
             </div>
-            <div class="brand-footer-copy">All rights reserved to Eng.Omar Wael</div>
         </div>
     </footer>
 
