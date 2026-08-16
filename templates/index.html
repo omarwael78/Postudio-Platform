@@ -69,6 +69,205 @@
         .create-post-card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+        .mood-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #e5e7eb;
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: #374151;
+        }
+        .mood-chip:hover {
+            border-color: #7C3AED;
+            background: #F5F3FF;
+            color: #7C3AED;
+        }
+        .mood-chip.active {
+            border-color: #7C3AED;
+            background: #7C3AED;
+            color: white;
+        }
+        .post-creator-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .post-creator-overlay.active {
+            display: flex;
+        }
+        .post-creator-modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .post-creator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .post-creator-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+        .post-creator-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #9ca3af;
+            transition: all 0.15s ease;
+        }
+        .post-creator-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        .post-creator-body {
+            padding: 16px 20px;
+        }
+        .post-creator-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .post-creator-user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .post-creator-user span {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a2e;
+        }
+        .post-creator-textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: none;
+            min-height: 80px;
+            font-family: inherit;
+            color: #374151;
+        }
+        .post-creator-textarea::placeholder {
+            color: #9ca3af;
+        }
+        .post-creator-preview {
+            position: relative;
+            display: none;
+            margin-top: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .post-creator-preview.show {
+            display: block;
+        }
+        .post-creator-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .post-creator-preview-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background 0.15s ease;
+        }
+        .post-creator-preview-remove:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        .post-creator-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f3f4f6;
+        }
+        .post-creator-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #e5e7eb;
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .post-creator-action-btn:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+        .post-creator-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .post-creator-submit {
+            padding: 10px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .post-creator-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .brand-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .brand-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -99,8 +298,25 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#10B981;"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
                         Photo
                     </button>
-
-            </div>
+                    <button class="post-creator-action-btn" onclick="toggleMoodSelector()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#F59E0B;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+                        Mood
+                    </button>
+                    <input type="file" id="postImageInput" accept="image/*" style="display:none;" onchange="handlePostMedia(this, 'image')">
+                </div>
+                <div id="moodSelector" style="display:none; padding: 12px; background: #f9fafb; border-radius: 12px; margin-top: 8px;">
+                    <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 8px; font-weight: 500;">How are you feeling?</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="selectMood('happy', '😊 Happy')" class="mood-chip">😊 Happy</button>
+                        <button onclick="selectMood('excited', '🎉 Excited')" class="mood-chip">🎉 Excited</button>
+                        <button onclick="selectMood('grateful', '🙏 Grateful')" class="mood-chip">🙏 Grateful</button>
+                        <button onclick="selectMood('chill', '😎 Chill')" class="mood-chip">😎 Chill</button>
+                        <button onclick="selectMood('creative', '🎨 Creative')" class="mood-chip">🎨 Creative</button>
+                        <button onclick="selectMood('inspired', '✨ Inspired')" class="mood-chip">✨ Inspired</button>
+                        <button onclick="selectMood('loved', '❤️ Loved')" class="mood-chip">❤️ Loved</button>
+                        <button onclick="selectMood('adventurous', '🚀 Adventurous')" class="mood-chip">🚀 Adventurous</button>
+                    </div>
+                </div>
             </div>
             <div class="post-creator-footer">
                 <button id="postCreatorSubmit" class="post-creator-submit brand-btn" disabled onclick="submitPost()">Post</button>
@@ -168,11 +384,11 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-                        <span class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-green-500 transition cursor-pointer">
+                        <span onclick="event.stopPropagation(); openPostCreator(); setTimeout(function(){ document.getElementById('postImageInput').click(); }, 300);" class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-green-500 transition cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#10B981;"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
                             Photo
                         </span>
-                        <span class="flex items-center gap-1.5 text-sm text-gray-400">
+                        <span onclick="event.stopPropagation(); openPostCreator(); setTimeout(function(){ toggleMoodSelector(); }, 300);" class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-amber-500 transition cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#F59E0B;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
                             Mood
                         </span>
@@ -399,6 +615,38 @@
         document.getElementById('postCreatorText').value = '';
         document.getElementById('postCreatorSubmit').disabled = true;
         removePostMedia();
+        document.getElementById('moodSelector').style.display = 'none';
+    }
+
+    // ─── Mood Selector ────────────────────────────────────────────
+    function toggleMoodSelector() {
+        const selector = document.getElementById('moodSelector');
+        selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectMood(mood, emoji) {
+        const textarea = document.getElementById('postCreatorText');
+        const currentText = textarea.value.trim();
+        const moodTag = '#' + mood;
+        
+        // Remove existing mood tags
+        const cleaned = currentText.replace(/#\w+/g, '').trim();
+        
+        // Add mood tag at end
+        textarea.value = cleaned ? cleaned + ' ' + moodTag : moodTag;
+        
+        // Update chip states
+        document.querySelectorAll('.mood-chip').forEach(chip => {
+            chip.classList.remove('active');
+            if (chip.textContent.includes(emoji.split(' ')[1])) {
+                chip.classList.add('active');
+            }
+        });
+        
+        // Enable submit
+        document.getElementById('postCreatorSubmit').disabled = false;
+        document.getElementById('moodSelector').style.display = 'none';
+        textarea.focus();
     }
 
     document.getElementById('postCreatorOverlay').addEventListener('click', function(e) {
