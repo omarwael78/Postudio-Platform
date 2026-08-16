@@ -11,6 +11,65 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body { background: #f0f2f5 !important; }
+        .brand-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: box-shadow 0.2s ease;
+        }
+        .brand-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed #e5e7eb;
+        }
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .empty-state h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .empty-state p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+        .post-card {
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .post-card:hover {
+            transform: translateY(-1px);
+        }
+        .suggestion-card {
+            transition: background 0.15s ease;
+        }
+        .suggestion-card:hover {
+            background: #f9fafb;
+        }
+        .create-post-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .create-post-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
@@ -96,28 +155,25 @@
             <div class="space-y-5 flex-shrink-0 lg:w-7/12">
 
                 <!-- Create Post Card (quick trigger) -->
-                <div class="brand-card p-4 cursor-pointer" onclick="openPostCreator()">
+                <div class="brand-card create-post-card p-4" onclick="openPostCreator()">
                     <div class="flex items-center space-x-3">
-                        <img src="{{user_profile.profileimg.url}}" class="w-10 h-10 rounded-full object-cover" alt="">
+                        <img src="{{user_profile.profileimg.url}}" class="w-11 h-11 rounded-full object-cover ring-2 ring-purple-100" alt="" onerror="this.src='{% static 'assets/images/avatars/avatar-2.jpg' %}'">
                         <div class="flex-1">
-                            <div class="w-full bg-gray-100 rounded-full px-4 py-2.5 text-sm text-gray-500 border-none">
+                            <div class="w-full bg-gray-50 rounded-full px-4 py-3 text-sm text-gray-400 border border-gray-100 hover:border-purple-200 transition">
                                 What's on your mind, {{request.user.username}}?
                             </div>
                         </div>
-                        <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-2 rounded-full">
+                        <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-2.5 rounded-full shadow-md shadow-purple-200">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                        <span class="flex items-center gap-1.5 text-sm text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" style="color:#10B981;"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                        <span class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-green-500 transition cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#10B981;"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
                             Photo
                         </span>
-                        <span class="flex items-center gap-1.5 text-sm text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" style="color:#3B82F6;"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/></svg>
-                            </span>
-                        <span class="flex items-center gap-1.5 text-sm text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" style="color:#F59E0B;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+                        <span class="flex items-center gap-1.5 text-sm text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="color:#F59E0B;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
                             Mood
                         </span>
                     </div>
@@ -125,7 +181,7 @@
 
                 <!-- posts -->
                 {% for post in posts reversed %}
-                <div class="brand-card overflow-hidden">
+                <div class="brand-card post-card overflow-hidden">
                     <!-- post header-->
                     <div class="flex justify-between items-center px-4 py-3">
                         <div class="flex flex-1 items-center space-x-3">
@@ -257,27 +313,41 @@
                     </div>
                 </div>
                 {% endfor %}
+
+                {% if not posts %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <h3>No posts yet</h3>
+                    <p>Be the first to share something with the community!</p>
+                </div>
+                {% endif %}
             </div>
 
             <!-- right sidebar -->
             <div class="lg:w-5/12">
-                <div class="brand-card overflow-hidden">
-                    <div class="bg-gray-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6">
-                        <h2 class="font-semibold text-lg">Suggested Users</h2>
+                <div class="brand-card overflow-hidden sticky" style="top: 82px;">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6">
+                        <h2 class="font-semibold text-gray-800">Suggested Users</h2>
                     </div>
-                    <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4">
+                    <div class="divide-gray-100 divide-y px-2">
                         {% for suggestion in suggestions_username_profile_list %}
-                        <div class="flex items-center justify-between py-3">
-                            <div class="flex flex-1 items-center space-x-4">
+                        <div class="flex items-center justify-between py-3 px-3 suggestion-card rounded-lg">
+                            <div class="flex flex-1 items-center space-x-3">
                                 <a href="/profile/{{suggestion.user}}">
-                                    <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10 object-cover">
+                                    <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-11 h-11 object-cover ring-2 ring-white" onerror="this.src='{% static 'assets/images/avatars/avatar-2.jpg' %}'">
                                 </a>
                                 <div class="flex flex-col">
-                                    <span class="block capitalize font-semibold text-sm"> {{suggestion.user}} </span>
-                                    <span class="block capitalize text-xs text-gray-500"> {{suggestion.bio|truncatechars:40}} </span>
+                                    <span class="block capitalize font-semibold text-sm text-gray-800"> {{suggestion.user}} </span>
+                                    <span class="block capitalize text-xs text-gray-400"> {{suggestion.bio|truncatechars:35}} </span>
                                 </div>
                             </div>
-                            <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1.5 rounded-full text-sm hover:bg-purple-600 hover:text-white hover:border-purple-600 transition"> View </a>
+                            <a href="/profile/{{suggestion.user}}" class="border border-purple-200 font-semibold px-4 py-1.5 rounded-full text-xs text-purple-600 hover:bg-purple-600 hover:text-white hover:border-purple-600 transition"> View </a>
                         </div>
                         {% endfor %}
                     </div>
@@ -287,16 +357,20 @@
     </div>
 
     <!-- Brand Footer -->
-    <footer class="brand-footer">
-        <div class="brand-footer-inner">
-            <div class="brand-footer-links">
-                <span class="brand-logo-sm" style="font-size:1rem;">postudio</span>
-                <a href="#">About</a>
-                <a href="#">Help</a>
-                <a href="#">Terms</a>
-                <a href="#">Privacy</a>
+    <footer style="background: white; border-top: 1px solid #e5e7eb; margin-top: 40px;">
+        <div style="max-width: 1090px; margin: 0 auto; padding: 24px 30px;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #7C3AED, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">postudio</span>
+                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: #9ca3af;">
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">About</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Help</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Terms</a>
+                        <a href="#" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#7C3AED'" onmouseout="this.style.color='#9ca3af'">Privacy</a>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #d1d5db;">All rights reserved to Eng.Omar Wael</p>
             </div>
-            <div class="brand-footer-copy">All rights reserved to Eng.Omar Wael</div>
         </div>
     </footer>
 
