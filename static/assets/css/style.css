@@ -1288,7 +1288,7 @@ strong {
 @media (min-width: 1024px) {
   .container {
     max-width: 900px !important;
-    padding-top: 45px;
+    padding-top: 80px;
   }
 }
 
@@ -1538,8 +1538,8 @@ header {
       -ms-flex-align: center;
           align-items: center;
   border-bottom: 1px solid #e5e7eb;
-  position: -webkit-sticky;
-  position: sticky;
+  position: fixed;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 header .header_inner {
