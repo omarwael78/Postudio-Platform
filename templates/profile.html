@@ -1,0 +1,558 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user_profile.user.username}} — postudio</title>
+    <link rel="icon" href="{% static 'images/fav.png' %}" type="image/png" sizes="16x16">
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <style>
+        .profile-cover {
+            background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+            height: 280px;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.3));
+        }
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            background: #f0f0f0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .profile-avatar-ring {
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, #7C3AED, #EC4899);
+            display: inline-block;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #262626;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: #8e8e8e;
+            font-weight: 400;
+        }
+        .post-grid-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #fafafa;
+            aspect-ratio: 1 / 1;
+        }
+        .post-grid-item img, .post-grid-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .post-grid-item.text-post-grid {
+            aspect-ratio: auto;
+            min-height: 120px;
+            padding: 16px;
+            background: linear-gradient(135deg, #F5F3FF, #FDF2F8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .post-grid-item.text-post-grid p {
+            font-size: 0.9rem;
+            color: #4B5563;
+            text-align: center;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        .post-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .post-grid-item:hover .post-grid-overlay {
+            opacity: 1;
+        }
+        .post-grid-overlay span {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .follow-btn {
+            padding: 6px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+        }
+        .follow-btn.follow {
+            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            color: white;
+        }
+        .follow-btn.follow:hover {
+            opacity: 0.9;
+        }
+        .follow-btn.unfollow {
+            background: #efefef;
+            color: #262626;
+        }
+        .follow-btn.unfollow:hover {
+            background: #dbdbdb;
+        }
+        .edit-profile-btn {
+            padding: 6px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #7C3AED, #EC4899);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .edit-profile-btn:hover {
+            opacity: 0.9;
+            color: white;
+        }
+        .sidebar-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid #efefef;
+        }
+        .bio-text {
+            color: #262626;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        .location-icon {
+            color: #8e8e8e;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <div id="brandToast" class="brand-toast"></div>
+
+    {% if user.is_authenticated %}
+    <header>
+        <div class="header_inner">
+            <div class="left-side">
+                <div id="logo">
+                    <a href="/">
+                        <span class="brand-logo">postudio</span>
+                    </a>
+                </div>
+                <form action="/search" method="POST" class="header_search">
+                {% csrf_token %}
+                    <input type="text" name="username" placeholder="Search postudio...">
+                    <button type="submit" class="icon-search" style="background:none; border:none; cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <div class="right-side lg:pr-4">
+                <a href="/" class="brand-btn flex font-bold hidden hover:opacity-90 hover:text-white inline-block items-center lg:flex max-h-10 mr-4 px-5 py-2 rounded-full text-white text-sm gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+                    Feed
+                </a>
+                <a href="/profile/{{request.user.username}}">
+                    <img src="{{current_user_profile.profileimg.url}}" class="header-avatar" alt="" 
+                         onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
+                </a>
+                <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
+                    <ul>
+                        <li><a href="/profile/{{request.user.username}}">My Profile</a></li>
+                        <li><a href="/settings">Account Settings</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    <main class="flex-1" style="max-width: 935px; margin: 0 auto; padding: 0 16px;">
+        <!-- Profile Header -->
+        <div class="profile-cover">
+            <div style="position: absolute; bottom: 20px; left: 30px; z-index: 2; display: flex; align-items: flex-end; gap: 24px;">
+                <div class="profile-avatar-ring">
+                    <img src="{{user_profile.profileimg.url}}" class="profile-avatar" alt="{{user_profile.user.username}}"
+                         onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
+                </div>
+                <div style="padding-bottom: 8px;">
+                    <h1 style="font-size: 1.6rem; font-weight: 700; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">{{user_profile.user.username}}</h1>
+                    {% if user_profile.location %}
+                    <p style="color: rgba(255,255,255,0.85); font-size: 0.9rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 14px; height: 14px; display: inline; vertical-align: middle;">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        {{user_profile.location}}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile info row -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid #efefef;">
+            <div style="display: flex; gap: 40px;">
+                <div style="text-align: center;">
+                    <div class="stat-value">{{user_post_length}}</div>
+                    <div class="stat-label">posts</div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="stat-value">{{user_followers}}</div>
+                    <div class="stat-label">followers</div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="stat-value">{{user_following}}</div>
+                    <div class="stat-label">following</div>
+                </div>
+            </div>
+            <div>
+                {% if user_object.username == user.username %}
+                <a href="/settings" class="edit-profile-btn">Edit profile</a>
+                {% else %}
+                <form action="/follow" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{user.username}}" name="follower" />
+                    <input type="hidden" value="{{user_object.username}}" name="user" />
+                    <button type="submit" class="follow-btn {% if button_text == 'Unfollow' %}unfollow{% else %}follow{% endif %}">
+                        {{button_text}}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bio -->
+        {% if user_profile.bio %}
+        <div style="padding: 16px 0 8px 0; border-bottom: 1px solid #efefef; margin-bottom: 12px;">
+            <p class="bio-text">{{user_profile.bio}}</p>
+        </div>
+        {% endif %}
+
+        <!-- Posts Grid -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 12px;">
+            {% for post in user_posts %}
+            {% if post.post_type == 'text' %}
+            <div class="post-grid-item text-post-grid cursor-pointer" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
+                <p>{{post.caption|truncatechars:80}}</p>
+            </div>
+            {% elif post.post_type == 'video' %}
+            <div class="post-grid-item cursor-pointer" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
+                <video src="{{post.image.url}}" muted preload="metadata" onerror="this.parentElement.style.background='#efefef'; this.style.display='none';"></video>
+                <div class="post-grid-overlay">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                    </span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                        {{post.no_of_likes}}
+                    </span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                            <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
+                        </svg>
+                        {{post.comments.count}}
+                    </span>
+                </div>
+            </div>
+            {% else %}
+            <div class="post-grid-item cursor-pointer" data-post-id="{{post.id}}" onclick="openPostModal('{{post.id}}')">
+                <img src="{{post.image.url}}" alt="Post by {{post.user}}" loading="lazy"
+                     onerror="this.parentElement.style.background='#efefef'; this.style.display='none';">
+                <div class="post-grid-overlay">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                        {{post.no_of_likes}}
+                    </span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                            <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
+                        </svg>
+                        {{post.comments.count}}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #8e8e8e;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width: 48px; height: 48px; margin: 0 auto 16px;">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                </svg>
+                <p style="font-size: 1.1rem;">No posts yet</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Post Detail Modal -->
+    <div id="post-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.85); overflow-y:auto;">
+        <div style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:40px;">
+            <div style="background:white; border-radius:16px; max-width:900px; width:100%; display:flex; flex-wrap:wrap; overflow:hidden; position:relative;">
+                <button onclick="closePostModal()" style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer; z-index:10; line-height:32px; text-align:center;">&times;</button>
+                <div id="modal-media-container" style="flex:1 1 50%; min-width:300px; background:#000; display:flex; align-items:center; justify-content:center;">
+                    <img id="modal-image" src="" style="width:100%; display:block;" alt="">
+                    <video id="modal-video" src="" style="width:100%; display:none;" controls></video>
+                    <div id="modal-text-only" style="display:none; width:100%; padding:40px; background:linear-gradient(135deg, #F5F3FF, #FDF2F8);">
+                        <p id="modal-text-content" style="font-size:1.1rem; line-height:1.7; color:#1F2937; white-space:pre-wrap; word-wrap:break-word;"></p>
+                    </div>
+                </div>
+                <div style="flex:1 1 50%; min-width:300px; display:flex; flex-direction:column;">
+                    <div style="padding:16px; border-bottom:1px solid #efefef; display:flex; align-items:center; gap:12px;">
+                        <img id="modal-avatar" src="" style="width:36px; height:36px; border-radius:50%; object-fit:cover; background:#f0f0f0;">
+                        <strong id="modal-user" style="flex:1;"></strong>
+                        <button id="modal-delete-post" onclick="modalDeletePost()" style="display:none; background:none; border:none; cursor:pointer; color:#EF4444; padding:4px;" title="Delete post">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                    <div id="modal-comments" style="flex:1; padding:16px; overflow-y:auto; max-height:300px;">
+                    </div>
+                    <div style="padding:12px 16px; border-top:1px solid #efefef;">
+                        <div style="display:flex; gap:16px; margin-bottom:8px;">
+                            <button id="modal-like-btn" onclick="" style="background:none; border:none; cursor:pointer; padding:0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="24" height="24"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" /></svg>
+                            </button>
+                        </div>
+                        <p id="modal-likes" style="font-weight:600; font-size:0.9rem; margin-bottom:4px;"></p>
+                        <p id="modal-caption" style="font-size:0.9rem; color:#262626;"></p>
+                        <div style="display:flex; gap:8px; margin-top:8px; border-top:1px solid #efefef; padding-top:8px;">
+                            <input id="modal-comment-input" type="text" placeholder="Add a comment..." style="flex:1; border:none; outline:none; font-size:0.9rem;">
+                            <button id="modal-comment-send" style="color:#7C3AED; font-weight:600; background:none; border:none; cursor:pointer; font-size:0.9rem;" disabled>Post</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Footer -->
+    <footer class="brand-footer">
+        <div class="brand-footer-inner">
+            <div class="brand-footer-links">
+                <span class="brand-logo-sm" style="font-size:1rem;">postudio</span>
+                <a href="/">Feed</a>
+                <a href="#">About</a>
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+            </div>
+            <div class="brand-footer-copy">All rights reserved to Eng.Omar Wael</div>
+        </div>
+    </footer>
+
+    <script>
+    let currentModalPostId = null;
+
+    function openPostModal(postId) {
+        currentModalPostId = postId;
+        fetch('/post/' + postId, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) return;
+            document.getElementById('modal-user').textContent = data.user;
+            document.getElementById('modal-avatar').src = '/media/profile_images/profile_' + data.user + '.jpg';
+            document.getElementById('modal-avatar').onerror = function() { this.src = '{% static 'assets/images/avatars/avatar-1.jpg' %}'; };
+            document.getElementById('modal-likes').textContent = data.no_of_likes + ' likes';
+            document.getElementById('modal-caption').innerHTML = '<strong>' + data.user + '</strong> ' + data.caption;
+            document.getElementById('modal-like-btn').setAttribute('onclick', 'modalLike(\'' + postId + '\')');
+
+            const delBtn = document.getElementById('modal-delete-post');
+            if (data.user === '{{request.user.username}}') {
+                delBtn.style.display = 'inline-block';
+                delBtn.dataset.postId = postId;
+            } else {
+                delBtn.style.display = 'none';
+            }
+
+            const img = document.getElementById('modal-image');
+            const video = document.getElementById('modal-video');
+            const textOnly = document.getElementById('modal-text-only');
+            img.style.display = 'none';
+            video.style.display = 'none';
+            textOnly.style.display = 'none';
+
+            if (data.post_type === 'image') {
+                img.src = data.image;
+                img.style.display = 'block';
+            } else if (data.post_type === 'video') {
+                video.src = data.image;
+                video.style.display = 'block';
+            } else {
+                document.getElementById('modal-text-content').textContent = data.caption;
+                textOnly.style.display = 'block';
+            }
+
+            const commentsDiv = document.getElementById('modal-comments');
+            commentsDiv.innerHTML = '';
+            if (data.comments.length === 0) {
+                commentsDiv.innerHTML = '<p style="color:#8e8e8e; font-size:0.9rem;">No comments yet.</p>';
+            } else {
+                data.comments.forEach(c => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'display:flex; align-items:flex-start; gap:8px; margin-bottom:12px; font-size:0.9rem;';
+                    div.innerHTML = '<div style="flex:1;"><strong>' + c.user + '</strong> ' + c.text + '</div>';
+                    if (c.user === '{{request.user.username}}') {
+                        const delSpan = document.createElement('button');
+                        delSpan.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
+                        delSpan.style.cssText = 'background:none; border:none; cursor:pointer; color:#EF4444; padding:2px; flex-shrink:0; opacity:0.5;';
+                        delSpan.title = 'Delete comment';
+                        delSpan.onmouseenter = function() { this.style.opacity = '1'; };
+                        delSpan.onmouseleave = function() { this.style.opacity = '0.5'; };
+                        delSpan.onclick = function(e) {
+                            e.stopPropagation();
+                            if (confirm('Delete this comment?')) {
+                                fetch('/delete-comment/' + c.id, {
+                                    method: 'POST',
+                                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                                })
+                                .then(r => r.json())
+                                .then(d => {
+                                    if (d.success) {
+                                        div.remove();
+                                        const parent = document.getElementById('modal-comments');
+                                        if (!parent.querySelector('[style*="margin-bottom:12px"]')) {
+                                            parent.innerHTML = '<p style="color:#8e8e8e; font-size:0.9rem;">No comments yet.</p>';
+                                        }
+                                    }
+                                });
+                            }
+                        };
+                        div.appendChild(delSpan);
+                    }
+                    commentsDiv.appendChild(div);
+                });
+            }
+
+            document.getElementById('post-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    function closePostModal() {
+        document.getElementById('post-modal').style.display = 'none';
+        document.body.style.overflow = '';
+        currentModalPostId = null;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closePostModal();
+    });
+
+    function modalLike(postId) {
+        fetch('/like-post?post_id=' + postId, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('modal-likes').textContent = data.no_of_likes + ' likes';
+        });
+    }
+
+    function modalDeletePost() {
+        const postId = document.getElementById('modal-delete-post').dataset.postId;
+        if (!postId || !confirm('Delete this post?')) return;
+        fetch('/delete-post/' + postId, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                closePostModal();
+                const gridItem = document.querySelector('.post-grid-item[data-post-id="' + postId + '"]');
+                if (gridItem) gridItem.remove();
+                showToast('Post deleted');
+            }
+        });
+    }
+
+    document.getElementById('modal-comment-input').addEventListener('input', function() {
+        document.getElementById('modal-comment-send').disabled = !this.value.trim();
+    });
+
+    document.getElementById('modal-comment-send').addEventListener('click', function() {
+        const input = document.getElementById('modal-comment-input');
+        const text = input.value.trim();
+        if (!text || !currentModalPostId) return;
+
+        fetch('/comment', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: new URLSearchParams({post_id: currentModalPostId, text: text})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) return;
+            input.value = '';
+            this.disabled = true;
+            const commentsDiv = document.getElementById('modal-comments');
+            const emptyMsg = commentsDiv.querySelector('p');
+            if (emptyMsg && !emptyMsg.querySelector('strong')) emptyMsg.remove();
+            const div = document.createElement('div');
+            div.style.cssText = 'margin-bottom:12px; font-size:0.9rem;';
+            div.innerHTML = '<strong>' + data.user + '</strong> ' + data.text;
+            commentsDiv.prepend(div);
+        });
+    });
+
+    function showToast(msg) {
+        const t = document.getElementById('brandToast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+    </script>
+
+    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>
+    <script src="{% static 'assets/js/uikit.js' %}"></script>
+    <script src="{% static 'assets/js/simplebar.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'images/fav.png' %}" rel="icon" type="image/png">
+    <title>Search — postudio</title>
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="flex flex-col min-h-screen">
+    <header>
+        <div class="header_inner">
+            <div class="left-side">
+                <div id="logo">
+                    <a href="/">
+                        <span class="brand-logo">postudio</span>
+                    </a>
+                </div>
+                <form action="/search" method="POST" class="header_search">
+                {% csrf_token %}
+                    <input type="text" name="username" placeholder="Search postudio...">
+                    <button type="submit" class="icon-search" style="background:none; border:none; cursor:pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <div class="right-side lg:pr-4">
+                <a href="/" class="brand-btn flex font-bold hidden hover:opacity-90 hover:text-white inline-block items-center lg:flex max-h-10 mr-4 px-5 py-2 rounded-full text-white text-sm gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+                    Feed
+                </a>
+                <a href="/profile/{{request.user.username}}">
+                    <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
+                </a>
+                <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
+                    <ul>
+                        <li><a href="/profile/{{request.user.username}}">My Profile</a></li>
+                        <li><a href="/settings">Account Settings</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1">
+    <div class="container m-auto" style="max-width: 800px; padding-top: 32px;">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Search Results</h2>
+
+        {% if username_profile_list %}
+        <div class="space-y-4">
+            {% for users in username_profile_list %}
+            <div class="brand-card overflow-hidden flex items-center p-4 gap-4">
+                <a href="/profile/{{users.user}}">
+                    <img src="{{users.profileimg.url}}" class="w-16 h-16 rounded-full object-cover" alt="">
+                </a>
+                <div class="flex-1">
+                    <h4 class="font-semibold"><a href="/profile/{{users.user}}">@{{users.user}}</a></h4>
+                    {% if users.location %}
+                    <p class="text-xs text-gray-500 mt-0.5">{{users.location}}</p>
+                    {% endif %}
+                    {% if users.bio %}
+                    <p class="text-sm text-gray-600 mt-1">{{users.bio|truncatechars:100}}</p>
+                    {% endif %}
+                </div>
+                <a href="/profile/{{users.user}}" class="brand-btn px-5 py-2 rounded-full text-sm whitespace-nowrap">View Profile</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-16 h-16 mx-auto mb-4 opacity-50">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <p class="text-lg">No users found</p>
+            <p class="text-sm mt-1">Try searching for a different username</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+    <footer class="brand-footer" style="margin-top: 60px;">
+        <div class="brand-footer-inner">
+            <div class="brand-footer-links">
+                <span class="brand-logo-sm" style="font-size:1rem;">postudio</span>
+                <a href="/">Feed</a>
+                <a href="#">About</a>
+                <a href="#">Privacy</a>
+            </div>
+            <div class="brand-footer-copy">All rights reserved to Eng.Omar Wael</div>
+        </div>
+    </footer>
+
+    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
+    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/uikit.js' %}"></script>
+    <script src="{% static 'assets/js/simplebar.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+</body>
+</html>
