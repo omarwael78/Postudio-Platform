@@ -20,13 +20,11 @@ class Post(models.Model):
     POST_TYPES = [
         ('text', 'Text'),
         ('image', 'Image'),
-        ('video', 'Video'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.CharField(max_length=100)
     post_type = models.CharField(max_length=10, choices=POST_TYPES, default='image')
     image = models.FileField(upload_to='post_images', null=True, blank=True)
-    video_url = models.URLField(blank=True, null=True)
     caption = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     no_of_likes = models.IntegerField(default=0)

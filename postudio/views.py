@@ -138,12 +138,6 @@ def upload(request):
         post_type = request.POST.get('post_type', 'image')
         uploaded_file = request.FILES.get('image_upload')
 
-        def is_video(f):
-            if not f:
-                return False
-            ct, _ = mimetypes.guess_type(f.name)
-            return ct and ct.startswith('video/')
-
         def is_image(f):
             if not f:
                 return False
@@ -152,20 +146,6 @@ def upload(request):
 
         if post_type == 'text':
             new_post = Post.objects.create(user=user, post_type='text', caption=caption)
-            new_post.save()
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True, 'post_id': str(new_post.id)})
-            return redirect('/')
-
-        elif post_type == 'video':
-            if uploaded_file and not is_video(uploaded_file):
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'error': 'Only video files are allowed (mp4, webm, etc.)'}, status=400)
-                messages.error(request, 'Only video files are allowed')
-                return redirect('/')
-            new_post = Post.objects.create(user=user, post_type='video', caption=caption)
-            if uploaded_file:
-                new_post.image = uploaded_file
             new_post.save()
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'post_id': str(new_post.id)})
@@ -289,7 +269,7 @@ def repost(request, post_id):
     import urllib.request
 
     try:
-        new_post = Post(user=username, post_type=original.post_type, video_url=original.video_url, caption=f'Reposted from @{original.user} (post:{post_id})')
+        new_post = Post(user=username, post_type=original.post_type, caption=f'Reposted from @{original.user} (post:{post_id})')
         if original.image:
             img_url = request.build_absolute_uri(original.image.url)
             img_data = urllib.request.urlopen(img_url, timeout=10).read()
@@ -320,7 +300,6 @@ def post_detail(request, post_id):
         'user': post.user,
         'post_type': post.post_type,
         'image': post.image.url if post.image else '',
-        'video_url': post.video_url or '',
         'caption': post.caption,
         'created_at': post.created_at.strftime('%b %d, %Y'),
         'no_of_likes': post.no_of_likes,

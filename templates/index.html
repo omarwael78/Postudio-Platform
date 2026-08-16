@@ -186,10 +186,7 @@
                             <img src="{{post.image.url}}" alt="" class="w-full">
                         </a>
                     </div>
-                    {% elif post.post_type == 'video' %}
-                    <div class="video-post-container">
-                        <video src="{{post.image.url}}" controls></video>
-                    </div>
+
                     {% else %}
                     <div class="px-4 py-6 bg-gradient-to-br from-purple-50 to-pink-50 border-t border-b border-gray-100">
                         <div class="text-post-content">{{post.caption}}</div>
