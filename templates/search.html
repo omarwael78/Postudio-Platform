@@ -85,12 +85,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
                     Feed
                 </a>
-                <a href="/profile/{{request.user.username}}">
+                <a href="/profile/{{request.user.username}}/">
                     <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="" onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
                 </a>
                 <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                     <ul>
-                        <li><a href="/profile/{{request.user.username}}">My Profile</a></li>
+                        <li><a href="/profile/{{request.user.username}}/">My Profile</a></li>
                         <li><a href="/settings/">Account Settings</a></li>
                         <li><a href="/logout/">Log Out</a></li>
                     </ul>
@@ -106,7 +106,7 @@
         {% if username_profile_list %}
         <div style="display: flex; flex-direction: column; gap: 12px;">
             {% for users in username_profile_list %}
-            <a href="/profile/{{users.user}}" style="text-decoration: none; color: inherit;">
+            <a href="/profile/{{users.user}}/" style="text-decoration: none; color: inherit;">
                 <div class="search-result-card">
                     <img src="{{users.profileimg.url}}" class="search-avatar" alt="" onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
                     <div style="flex: 1; min-width: 0;">

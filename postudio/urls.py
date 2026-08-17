@@ -21,6 +21,7 @@ urlpatterns = [
     path('delete-post/<uuid:post_id>/', views.delete_post, name='delete-post'),
     path('like-post/', views.like_post, name='like-post'),
     path('comment/', views.comment, name='comment'),
+    path('delete-comment/<uuid:comment_id>/', views.delete_comment, name='delete-comment'),
     path('post/<uuid:post_id>/', views.post_detail, name='post-detail'),
     path('hide-post/<uuid:post_id>/', views.hide_post, name='hide-post'),
     path('repost/<uuid:post_id>/', views.repost, name='repost'),

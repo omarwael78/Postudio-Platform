@@ -11,114 +11,250 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     <style>
-        body { background: #f0f2f5 !important; }
-        .settings-card {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+        .ig-header {
             background: white;
-            border-radius: 16px;
-            border: 1px solid #e5e7eb;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            border-bottom: 1px solid #dbdbdb;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 60px;
         }
-        .settings-card-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        .settings-card-header h3 {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin: 0;
-        }
-        .settings-card-body {
-            padding: 24px;
-        }
-        .settings-card-footer {
-            padding: 16px 24px;
-            background: #f9fafb;
+        .ig-header-inner {
+            max-width: 935px;
+            margin: 0 auto;
+            height: 100%;
             display: flex;
-            justify-content: flex-end;
-            border-top: 1px solid #f3f4f6;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
         }
-        .settings-input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1.5px solid #e5e7eb;
-            background: #f9fafb;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+        .ig-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        .settings-input:focus {
-            border-color: #7C3AED;
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
-            outline: none;
+        .ig-brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #833AB4, #FD1D1D, #FCB045);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
         }
-        .settings-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-        .settings-save-btn {
-            padding: 10px 28px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #7C3AED, #A855F7);
-            color: white;
-            font-weight: 600;
+        .ig-back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #262626;
+            text-decoration: none;
             font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+            font-weight: 400;
         }
-        .settings-save-btn:hover {
-            box-shadow: 0 4px 12px rgba(124,58,237,0.35);
-            transform: translateY(-1px);
+        .ig-back-link:hover { color: #0095f6; }
+        .ig-back-link svg { width: 20px; height: 20px; }
+        .ig-header-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .ig-settings-wrapper {
+            max-width: 600px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+
+        .ig-settings-card {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .ig-settings-card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .ig-settings-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .ig-settings-photo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #efefef;
+        }
+        .ig-settings-photo {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #dbdbdb;
+        }
+        .ig-settings-photo-info {
+            flex: 1;
+        }
+        .ig-settings-photo-info .username {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+        .ig-settings-photo-upload {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0095f6;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .ig-settings-photo-upload:hover { color: #00376b; }
+
+        .ig-settings-field {
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .ig-settings-field label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #8e8e8e;
+            text-transform: capitalize;
+        }
+        .ig-settings-field input,
+        .ig-settings-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: #262626;
+            background: #fafafa;
+            transition: border-color 0.2s;
+        }
+        .ig-settings-field input:focus,
+        .ig-settings-field textarea:focus {
+            border-color: #a8a8a8;
+            outline: none;
+            background: white;
+        }
+        .ig-settings-field textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .ig-settings-submit {
+            padding: 8px 24px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 12px 20px 20px;
+        }
+        .ig-settings-submit:hover { background: #1877f2; }
+
+        .ig-settings-danger-section {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .ig-settings-danger-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .ig-settings-danger-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ed4956;
+        }
+
+        .ig-alert {
+            padding: 14px 18px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ig-alert.success {
+            background: #edf7ed;
+            border: 1px solid #b4e3b4;
+            color: #1a7a1a;
+        }
+        .ig-alert.error {
+            background: #fdeeed;
+            border: 1px solid #f5c6c6;
+            color: #dc2626;
+        }
+
+        .ig-footer {
+            background: white;
+            border-top: 1px solid #dbdbdb;
+            margin-top: 40px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .ig-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .ig-footer-links a {
+            color: #8e8e8e;
+            font-size: 0.75rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ig-footer-links a:hover { color: #262626; }
+        .ig-footer-copy {
+            color: #c7c7c7;
+            font-size: 0.75rem;
+            text-transform: uppercase;
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
-
-    <header>
-        <div class="header_inner">
-            <div class="left-side">
-                <div id="logo">
-                    <a href="/">
-                        <span class="brand-logo">postudio</span>
-                    </a>
-                </div>
-                <a href="/" class="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-600 ml-4 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
-                    Back to Feed
+<body>
+    <header class="ig-header">
+        <div class="ig-header-inner">
+            <div class="ig-header-left">
+                <a href="/" class="ig-brand">postudio</a>
+                <a href="/" class="ig-back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 </a>
             </div>
-            <div class="right-side lg:pr-4">
-                <a href="/profile/{{request.user.username}}">
-                    <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="" 
+            <div>
+                <a href="/profile/{{request.user.username}}/">
+                    <img src="{{user_profile.profileimg.url}}" class="ig-header-avatar" alt=""
                          onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
                 </a>
-                <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
-                    <ul>
-                        <li><a href="/profile/{{request.user.username}}">My Profile</a></li>
-                        <li><a href="/settings/">Account Settings</a></li>
-                        <li><a href="/logout/">Log Out</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </header>
 
-    <div class="flex-1">
-    <div class="container m-auto" style="max-width: 640px; padding-top: 80px;">
-        <div style="margin-bottom: 28px;">
-            <h1 style="font-size: 1.6rem; font-weight: 700; color: #1a1a2e; margin-bottom: 4px;">Account Settings</h1>
-            <p style="color: #9ca3af; font-size: 0.9rem;">Manage your profile and security</p>
-        </div>
-
+    <div class="ig-settings-wrapper">
         {% for message in messages %}
-        <div style="padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; {% if message.tags == 'success' %}background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46;{% else %}background: #FEF2F2; border: 1px solid #FECACA; color: #DC2626;{% endif %}">
+        <div class="ig-alert {% if message.tags == 'success' %}success{% else %}error{% endif %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
             </svg>
@@ -126,89 +262,65 @@
         </div>
         {% endfor %}
 
-        <div style="display: flex; flex-direction: column; gap: 24px;">
-            <!-- Profile -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h3>Profile</h3>
+        <div class="ig-settings-card">
+            <form action="/settings/" method="POST" enctype="multipart/form-data" id="profileForm">
+                {% csrf_token %}
+                <div class="ig-settings-photo-section">
+                    <img src="{{user_profile.profileimg.url}}" class="ig-settings-photo" alt=""
+                         onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
+                    <div class="ig-settings-photo-info">
+                        <div class="username">{{request.user.username}}</div>
+                        <label class="ig-settings-photo-upload" for="profileImageInput">Change profile photo</label>
+                        <input type="file" id="profileImageInput" name="image" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                    </div>
                 </div>
-                <form action="/settings/" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="settings-card-body" style="display: flex; flex-direction: column; gap: 20px;">
-                        <div>
-                            <label class="settings-label">Profile Image</label>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <img width="64" height="64" src="{{user_profile.profileimg.url}}" style="border-radius: 50%; object-fit: cover; border: 3px solid #f3f4f6;" onerror="this.src='{% static 'assets/images/avatars/avatar-1.jpg' %}'">
-                                <input type="file" name="image" class="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="settings-label">Bio</label>
-                            <textarea name="bio" rows="3" class="settings-input" style="height: auto; min-height: 90px; padding: 12px 16px;">{{user_profile.bio}}</textarea>
-                        </div>
-                        <div>
-                            <label class="settings-label">Location</label>
-                            <input type="text" name="location" value="{{user_profile.location}}" class="settings-input" placeholder="Where are you based?">
-                        </div>
-                    </div>
-                    <div class="settings-card-footer">
-                        <button type="submit" class="settings-save-btn">Save Changes</button>
-                    </div>
-                </form>
-            </div>
+                <div class="ig-settings-field">
+                    <label>Bio</label>
+                    <textarea name="bio" placeholder="Tell people about yourself...">{{user_profile.bio}}</textarea>
+                </div>
+                <div class="ig-settings-field">
+                    <label>Location</label>
+                    <input type="text" name="location" value="{{user_profile.location}}" placeholder="Where are you based?">
+                </div>
+                <button type="submit" class="ig-settings-submit">Submit</button>
+            </form>
+        </div>
 
-            <!-- Change Password -->
-            <div class="settings-card">
-                <div class="settings-card-header">
-                    <h3>Change Password</h3>
-                </div>
-                <form method="POST" action="/settings/">
-                    {% csrf_token %}
-                    <div class="settings-card-body" style="display: flex; flex-direction: column; gap: 20px;">
-                        <div>
-                            <label class="settings-label">Current Password</label>
-                            <input type="password" name="old_password" placeholder="Enter current password" class="settings-input" required>
-                        </div>
-                        <div>
-                            <label class="settings-label">New Password</label>
-                            <input type="password" name="new_password1" placeholder="Enter new password" class="settings-input" required>
-                        </div>
-                        <div>
-                            <label class="settings-label">Confirm New Password</label>
-                            <input type="password" name="new_password2" placeholder="Confirm new password" class="settings-input" required>
-                        </div>
-                    </div>
-                    <div class="settings-card-footer">
-                        <button type="submit" class="settings-save-btn">Change Password</button>
-                    </div>
-                </form>
+        <div class="ig-settings-danger-section">
+            <div class="ig-settings-danger-header">
+                <h3>Change Password</h3>
             </div>
+            <form method="POST" action="/settings/">
+                {% csrf_token %}
+                <div class="ig-settings-field">
+                    <label>Current Password</label>
+                    <input type="password" name="old_password" placeholder="Current password" required>
+                </div>
+                <div class="ig-settings-field">
+                    <label>New Password</label>
+                    <input type="password" name="new_password1" placeholder="New password" required>
+                </div>
+                <div class="ig-settings-field">
+                    <label>Confirm New Password</label>
+                    <input type="password" name="new_password2" placeholder="Confirm new password" required>
+                </div>
+                <button type="submit" class="ig-settings-submit">Change Password</button>
+            </form>
         </div>
     </div>
-</div>
 
-    <footer style="background: white; border-top: 1px solid #e5e7eb; margin-top: 60px;">
-        <div style="max-width: 640px; margin: 0 auto; padding: 24px 16px;">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <span style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, #7C3AED, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">postudio</span>
-                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: #9ca3af;">
-                        <a href="/" style="color: #9ca3af; text-decoration: none;">Feed</a>
-                        <a href="#" style="color: #9ca3af; text-decoration: none;">About</a>
-                        <a href="#" style="color: #9ca3af; text-decoration: none;">Privacy</a>
-                    </div>
-                </div>
-                <p style="font-size: 0.8rem; color: #d1d5db;">All rights reserved to Eng.Omar Wael</p>
-            </div>
+    <footer class="ig-footer">
+        <div class="ig-footer-links">
+            <a href="/">Feed</a>
+            <a href="#">About</a>
+            <a href="#">Privacy</a>
         </div>
+        <div class="ig-footer-copy">All rights reserved to Eng.Omar Wael</div>
     </footer>
 
-    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
-    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>
     <script src="{% static 'assets/js/uikit.js' %}"></script>
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
