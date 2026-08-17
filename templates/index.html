@@ -697,7 +697,7 @@
             formData.append('post_type', 'text');
         }
 
-        fetch('/upload', {
+        fetch('/upload/', {
             method: 'POST',
             headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' },
             body: formData
@@ -738,7 +738,7 @@
             const countSpan = this.querySelector('.like-count');
             const iconDiv = this.querySelector('.like-icon');
 
-            fetch('/like-post?post_id=' + postId, {
+            fetch('/like-post/?post_id=' + postId, {
                 headers: {'X-Requested-With': 'XMLHttpRequest'}
             })
             .then(res => res.json())
@@ -786,7 +786,7 @@
         const csrf = form.querySelector('[name=csrfmiddlewaretoken]').value;
         const section = form.closest('.py-3').querySelector('.comments-section');
 
-        fetch('/comment', {
+        fetch('/comment/', {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -837,7 +837,7 @@
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const postId = this.dataset.postId;
-            fetch('/repost/' + postId, {
+            fetch('/repost/' + postId + '/', {
                 headers: {'X-Requested-With': 'XMLHttpRequest'}
             })
             .then(res => res.json())
@@ -861,7 +861,7 @@
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const postId = this.dataset.postId;
-            const url = window.location.origin + '/post/' + postId;
+            const url = window.location.origin + '/post/' + postId + '/';
             navigator.clipboard.writeText(url).then(() => {
                 this.closest('.share-dropdown').style.display = 'none';
                 showToast('Link copied!');
@@ -886,7 +886,7 @@
             e.preventDefault();
             const postId = this.dataset.postId;
             if (confirm('Delete this post?')) {
-                fetch('/delete-post/' + postId, { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } })
+                fetch('/delete-post/' + postId + '/', { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } })
                 .then(() => location.reload());
             }
         });
@@ -900,7 +900,7 @@
             const commentId = this.dataset.commentId;
             const commentEl = this.closest('.flex');
             if (confirm('Delete this comment?')) {
-                fetch('/delete-comment/' + commentId, {
+                fetch('/delete-comment/' + commentId + '/', {
                     method: 'POST',
                     headers: { 'X-CSRFToken': '{{ csrf_token }}' }
                 })
@@ -926,7 +926,7 @@
             e.preventDefault();
             const postId = this.dataset.postId;
             const postCard = this.closest('.brand-card');
-            fetch('/hide-post/' + postId, {
+            fetch('/hide-post/' + postId + '/', {
                 headers: {'X-Requested-With': 'XMLHttpRequest'}
             })
             .then(res => res.json())
@@ -949,7 +949,7 @@
                 const formData = new FormData();
                 formData.append('follower', '{{request.user.username}}');
                 formData.append('user', username);
-                fetch('/follow', {
+                fetch('/follow/', {
                     method: 'POST',
                     headers: { 'X-CSRFToken': '{{ csrf_token }}' },
                     body: formData
