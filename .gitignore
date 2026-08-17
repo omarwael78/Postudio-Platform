@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+.env
+media/post_images/
+media/profile_images/
+!media/blank-profile-picture.png
+.DS_Store
+Thumbs.db
+*.pyc
+.gitpod.yml.bak

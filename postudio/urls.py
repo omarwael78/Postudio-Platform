@@ -8,6 +8,9 @@ from rest_framework_simplejwt.views import (
 )
 from . import views
 
+handler404 = views.error_404
+handler500 = views.error_500
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('profile/<str:username>/', views.profile, name='profile'),

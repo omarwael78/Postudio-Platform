@@ -468,6 +468,27 @@
             .ig-modal { flex-direction: column; max-height: 95vh; }
             .ig-modal-sidebar { width: 100%; max-height: 50vh; }
         }
+        .brand-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a2e;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 99999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .brand-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -617,6 +638,11 @@
     </footer>
 
     <script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
     let currentModalPostId = null;
 
     function openPostModal(postId) {
@@ -628,10 +654,10 @@
         .then(data => {
             if (data.error) return;
             document.getElementById('modal-user').textContent = data.user;
-            document.getElementById('modal-avatar').src = '/media/profile_images/profile_' + data.user + '.jpg';
-            document.getElementById('modal-avatar').onerror = function() { this.src = '{% static 'assets/images/avatars/avatar-1.jpg' %}'; };
+            document.getElementById('modal-avatar').src = data.user_profile_img || '{% static "assets/images/avatars/avatar-1.jpg" %}';
+            document.getElementById('modal-avatar').onerror = function() { this.src = '{% static "assets/images/avatars/avatar-1.jpg" %}'; };
             document.getElementById('modal-likes').textContent = data.no_of_likes + ' likes';
-            document.getElementById('modal-caption').innerHTML = '<strong>' + data.user + '</strong> ' + data.caption;
+            document.getElementById('modal-caption').innerHTML = '<strong>' + escapeHtml(data.user) + '</strong> ' + escapeHtml(data.caption);
             document.getElementById('modal-time').textContent = data.created_at;
             document.getElementById('modal-like-btn').setAttribute('onclick', 'modalLike(\'' + postId + '\')');
 
@@ -664,7 +690,7 @@
                 data.comments.forEach(c => {
                     const div = document.createElement('div');
                     div.className = 'ig-modal-comment';
-                    div.innerHTML = '<div style="flex:1;"><strong>' + c.user + '</strong> ' + c.text + '</div>';
+                    div.innerHTML = '<div style="flex:1;"><strong>' + escapeHtml(c.user) + '</strong> ' + escapeHtml(c.text) + '</div>';
                     if (c.user === '{{request.user.username}}') {
                         const delBtn = document.createElement('button');
                         delBtn.className = 'del-comment';
@@ -763,7 +789,7 @@
             if (emptyMsg && !emptyMsg.querySelector('strong')) emptyMsg.remove();
             const div = document.createElement('div');
             div.className = 'ig-modal-comment';
-            div.innerHTML = '<div style="flex:1;"><strong>' + data.user + '</strong> ' + data.text + '</div>';
+            div.innerHTML = '<div style="flex:1;"><strong>' + escapeHtml(data.user) + '</strong> ' + escapeHtml(data.text) + '</div>';
             commentsDiv.prepend(div);
         });
     });
